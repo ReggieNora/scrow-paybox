@@ -1,0 +1,10 @@
+{
+  "tool": "create_escrow",
+  "arguments": {
+    "sender": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
+    "seller": "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH",
+    "amountSol": "0.01",
+    "refundAfterHours": 24,
+    "escrowId": "1"
+  }
+}

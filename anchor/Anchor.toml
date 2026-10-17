@@ -1,0 +1,16 @@
+[toolchain]
+anchor_version = "0.32.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+scrow = "28t38U7muxeGwWkigpJVaha8nHddnfZdnCYBBfb9RVE1"
+
+[programs.mainnet]
+scrow = "28t38U7muxeGwWkigpJVaha8nHddnfZdnCYBBfb9RVE1"
+
+[provider]
+cluster = "mainnet"
+wallet = "~/.config/solana/id.json"
