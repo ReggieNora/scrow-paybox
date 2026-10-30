@@ -1,6 +1,41 @@
 .toolchain/
 .ref/
-node_modules/
 anchor/target/
 anchor/.anchor/
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/cache
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/plugin/dist
+
+# misc
 .DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+# rust / anchor target
+/program/target

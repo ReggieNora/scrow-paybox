@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "scrow-solana-escrow",
+  "name": "sCrow",
+  "tagline": "Deterministic 3-Strike Solana Escrow Deck",
+  "description": "High-fidelity minimalist Solana escrow dApp with a zero-scroll 4-card playing deck UI, deterministic 3-strike revision controls enforced on-chain, and 100% PDA rent reclamation.",
+  "version": "0.1.0",
+  "icons": {
+    "128": "/assets/icon-128.png"
+  },
+  "branding": {
+    "primaryColor": "#0B0F17",
+    "surfaceColor": "#110C1D",
+    "accentColor": "#A855F7"
+  },
+  "auth": {
+    "type": "oauth2.1-pkce",
+    "scopes": ["wallets:sign", "vault:read"]
+  },
+  "mcp": {
+    "endpoint": "/api/mcp",
+    "transport": "http-jsonrpc",
+    "tools": [
+      {
+        "name": "scrow_create_deck",
+        "description": "Instantiates and funds an ephemeral sCrow Anchor PDA via the user's PayBox vault (`initialize_escrow`).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "creator": {
+              "type": "string",
+              "description": "Creator Solana wallet address from PayBox vault."
+            },
+            "recipient": {
+              "type": "string",
+              "description": "Recipient Solana wallet address delivering the work."
+            },
+            "amountSol": {
+              "type": "number",
+              "description": "Amount of SOL to lock in the ephemeral Escrow PDA."
+            },
+            "terms": {
+              "type": "string",
+              "description": "Plaintext deliverable milestones hashed into the 32-byte on-chain `terms_hash`."
+            },
+            "isTimed": {
+              "type": "boolean",
+              "description": "Whether this escrow enforces a delivery deadline timer."
+            },
+            "duration": {
+              "type": "string",
+              "description": "Deadline duration string when `isTimed` is true (e.g. '24h', '7 days')."
+            }
+          },
+          "required": ["creator", "recipient", "amountSol", "terms"]
+        }
+      },
+      {
+        "name": "scrow_submit_work",
+        "description": "Submits PR or deliverable proof metadata URL to transition the sCrow PDA from `Pending` to `InReview` (`submit_work`).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "pdaAddress": {
+              "type": "string",
+              "description": "Target sCrow Escrow PDA address."
+            },
+            "recipient": {
+              "type": "string",
+              "description": "Recipient wallet signing the work submission."
+            },
+            "submissionUrl": {
+              "type": "string",
+              "description": "GitHub PR URL, IPFS URI, or deployment proof link (max 256 chars)."
+            }
+          },
+          "required": ["pdaAddress", "recipient", "submissionUrl"]
+        }
+      },
+      {
+        "name": "scrow_review_work",
+        "description": "Executes creator approval or increments the deterministic revision strike counter (Strike 1-3). If `attempts_used == 3`, automatically transitions PDA state to `Refunded` and returns full principal to creator (`review_work`).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "pdaAddress": {
+              "type": "string",
+              "description": "Target sCrow Escrow PDA address."
+            },
+            "creator": {
+              "type": "string",
+              "description": "Creator wallet address with review authority."
+            },
+            "approved": {
+              "type": "boolean",
+              "description": "True to approve work and release payout; False to request revision and increment strike counter."
+            },
+            "feedback": {
+              "type": "string",
+              "description": "Optional review notes or revision requirements."
+            }
+          },
+          "required": ["pdaAddress", "creator", "approved"]
+        }
+      },
+      {
+        "name": "scrow_release_payout",
+        "description": "Settles the sCrow escrow by deducting a 0.75% protocol fee to the sCrow Protocol Treasury, sending 99.25% to the recipient, and executing `close_account` to reclaim 100% of PDA SOL rent back to the creator (`release_payout`).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "pdaAddress": {
+              "type": "string",
+              "description": "Target sCrow Escrow PDA address."
+            },
+            "creator": {
+              "type": "string",
+              "description": "Creator wallet address reclaiming 100% of the closed PDA rent."
+            }
+          },
+          "required": ["pdaAddress", "creator"]
+        }
+      }
+    ]
+  }
+}
